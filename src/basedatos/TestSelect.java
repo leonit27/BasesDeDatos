@@ -22,7 +22,6 @@ public class TestSelect {
                         rs.getString(4));
             }
 
-
         } catch (SQLException e) {
             System.out.println("Error en la consulta");
             e.printStackTrace();
