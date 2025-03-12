@@ -2,36 +2,57 @@ package ejercicioSQLite;
 
 import java.sql.*;
 
-public class Peliculas {
-    private String titulo;
-    private String director;
-    private int anyo;
-    private String genero;
-    private double rating;
-    
-    public Peliculas(String titulo, String director, int anyo, String genero, double rating) {
-        this.titulo = titulo;
-        this.director = director;
-        this.anyo = anyo;
-        this.genero = genero;
-        this.rating = rating;
+public class Clientes {
+    private String DNI;
+    private String nombre;
+    private String apellidos;
+
+    public Clientes(String DNI, String nombre, String apellidos) {
+        this.DNI = DNI;
+        this.nombre = nombre;
+        this.apellidos = apellidos;
     }
 
-    public static void agregarPeliculas(String titulo, String director, int anyo, String genero, double rating) {
+    public static void crearTablaClientes() {
+        Connection conn = null;
+        Statement st = null;
+        String sql;
+
+        try {
+            conn = DatabaseConnectionVideoclub.getConnection();
+            st = conn.createStatement();
+
+            sql = "CREATE TABLE clientes(DNI varchar(9) CONSTRAINT DNI PRIMARY KEY, Nombre varchar(20), Apellidos varchar(50))";
+            st.executeUpdate(sql);
+        } catch (SQLException ex) {
+            System.out.println("Error: " + ex.getMessage());
+        } finally {
+            try {
+                if (st != null && !st.isClosed()) st.close();
+            } catch (SQLException ex) {
+                System.out.println("No se ha podido cerrar el Statement por alguna razón");
+            }
+            try {
+                if (conn != null && !conn.isClosed()) conn.close();
+            } catch (SQLException ex) {
+                System.out.println("No se ha podido cerrar la connexion por alguna razón");
+            }
+        }
+    }
+
+    public static void agregarClientes(String DNI, String nombre, String apellidos) {
         PreparedStatement st = null;
         Connection conn = null;
-        
-        String sql = "INSERT INTO peliculas(Título, Director, Año, Género, Rating) VALUES (?, ?, ?, ?, ?)";
-        
+
+        String sql = "INSERT INTO clientes(DNI, Nombre, Apellidos) VALUES (?, ?, ?)";
+
         try {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.prepareStatement(sql);
-            
-            st.setString(1, titulo);
-            st.setString(2, director);
-            st.setInt(3, anyo);
-            st.setString(4, genero);
-            st.setDouble(5, rating);
+
+            st.setString(1, DNI);
+            st.setString(2, nombre);
+            st.setString(3, apellidos);
             st.executeUpdate();
         } catch (SQLException ex){
             System.out.println("Error "+ ex.getMessage());
@@ -49,7 +70,7 @@ public class Peliculas {
         }
     }
 
-    public static void mostrarPelicula(String titulo) {
+    public static void mostrarCliente(String DNI) {
         Connection conn = null;
         Statement st = null;
         ResultSet rs = null;
@@ -57,17 +78,15 @@ public class Peliculas {
         try {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.createStatement();
-            rs = st.executeQuery("SELECT * FROM peliculas WHERE Título = '" + titulo + "'");
+            rs = st.executeQuery("SELECT * FROM clientes WHERE DNI = '" + DNI + "'");
 
-            System.out.println("Título\t\t\tDirector\t\t\tAño\t\tGénero\t\tRating\n" +
-                    "----------------------------------------------------------------");
+            System.out.println("DNI\t\tNombre\t\tApellidos" +
+                    "----------------------------------------------");
 
             while (rs.next()) {
                 System.out.print(rs.getString(1) + "\t");
                 System.out.print(rs.getString(2) + "\t");
-                System.out.print(rs.getInt(3) + "\t");
-                System.out.print(rs.getString(4) + "\t");
-                System.out.println(rs.getDouble(5));
+                System.out.println(rs.getString(3));
             }
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -92,7 +111,7 @@ public class Peliculas {
         }
     }
 
-    public static void modificarPelicula(String titulo, String director, int anyo, String genero, double rating) {
+    public static void modificarCliente(String DNI, String nombre, String apellidos) {
         Connection conn = null;
         Statement st = null;
         String sql;
@@ -101,8 +120,7 @@ public class Peliculas {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.createStatement();
 
-            sql = "UPDATE peliculas SET Director = '" + director + "', Año = " + anyo + ", Género = '" + genero + "', Rating = " + rating +
-                    " WHERE Título = '" + titulo + "'";
+            sql = "UPDATE peliculas SET DNI = '" + DNI + "', Nombre = " + nombre + ", Apellidos = '" + apellidos + "'";
             st.executeUpdate(sql);
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -120,7 +138,7 @@ public class Peliculas {
         }
     }
 
-    public static void eliminarPelicula(String titulo) {
+    public static void eliminarCliente(String DNI) {
         Connection conn = null;
         Statement st = null;
         String sql;
@@ -129,7 +147,7 @@ public class Peliculas {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.createStatement();
 
-            sql = "DELETE FROM peliculas WHERE Título = '" + titulo + "'";
+            sql = "DELETE FROM peliculas WHERE DNI = '" + DNI + "'";
             st.executeUpdate(sql);
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -155,17 +173,15 @@ public class Peliculas {
         try {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.createStatement();
-            rs = st.executeQuery("SELECT * FROM peliculas");
+            rs = st.executeQuery("SELECT * FROM clientes");
 
-            System.out.println("Título\t\t\tDirector\t\t\tAño\t\tGénero\t\tRating\n" +
-                    "----------------------------------------------------------------");
+            System.out.println("DNI\t\tNombre\t\tApellidos" +
+                    "-----------------------------------------");
 
             while (rs.next()) {
                 System.out.print(rs.getString(1) + "\t");
                 System.out.print(rs.getString(2) + "\t");
-                System.out.print(rs.getInt(3) + "\t");
-                System.out.print(rs.getString(4) + "\t");
-                System.out.println(rs.getDouble(5));
+                System.out.print(rs.getString(3));
             }
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
