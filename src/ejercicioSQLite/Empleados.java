@@ -1,6 +1,7 @@
 package ejercicioSQLite;
 
 import java.sql.*;
+import java.util.Scanner;
 
 public class Empleados {
     private String IDempleado;
@@ -13,6 +14,76 @@ public class Empleados {
         this.DNI = DNI;
         this.nombre = nombre;
         this.apellidos = apellidos;
+    }
+
+    public static void menuEmpleados(int opcionSeleccionada, Scanner s) {
+        while (opcionSeleccionada != 0) {
+            System.out.println("Menú de gestión de empleados\n" +
+                    "------------------------------");
+
+            System.out.print("0. Volver atrás\n" +
+                    "1. Agregar un empleado\n" +
+                    "2. Mostrar los datos de un empleado\n" +
+                    "3. Modificar datos de un empleado\n" +
+                    "4. Eliminar empleado\n" +
+                    "5. Mostrar todos los empleados\n" +
+                    "Elige una opción: ");
+            opcionSeleccionada = s.nextInt();
+            s.nextLine();
+
+            switch (opcionSeleccionada) {
+                case 0:
+                    System.out.println("Saliendo del menú de gestión de empleados...");
+                    break;
+                case 1:
+                    System.out.print("IDempleado: ");
+                    String IDempleadoAgregado = s.nextLine();
+
+                    System.out.print("DNI: ");
+                    String DNIagregado = s.nextLine();
+
+                    System.out.print("Nombre: ");
+                    String nombreAgregado = s.nextLine();
+
+                    System.out.print("Apellidos: ");
+                    String apellidosAgregados = s.nextLine();
+
+                    Empleados.agregarEmpleados(IDempleadoAgregado, DNIagregado, nombreAgregado, apellidosAgregados);
+                    break;
+                case 2:
+                    System.out.print("Introduce el IDempleado del empleado que quieras ver los datos: ");
+                    String IDempleadoVisualizado = s.nextLine();
+
+                    Empleados.mostrarEmpleado(IDempleadoVisualizado);
+                    break;
+                case 3:
+                    System.out.print("Introduce el IDempleado del empleado que quieras modificar los datos: ");
+                    String IDempleadoModificado = s.nextLine();
+
+                    System.out.print("Nuevo DNI: ");
+                    String DNImodificado = s.nextLine();
+
+                    System.out.print("Nuevo nombre: ");
+                    String nombreModificado = s.nextLine();
+
+                    System.out.print("Nuevos apellidos: ");
+                    String apellidosModificados = s.nextLine();
+
+                    Empleados.modificarEmpleado(IDempleadoModificado, DNImodificado, nombreModificado, apellidosModificados);
+                    break;
+                case 4:
+                    System.out.print("Introduce el IDempleado del empleado que deseas eliminar: ");
+                    String IDempleadoEliminado = s.nextLine();
+
+                    Empleados.eliminarEmpleado(IDempleadoEliminado);
+                    break;
+                case 5:
+                    Empleados.mostrarTabla();
+                    break;
+                default:
+                    System.out.println("Número introducido incorrecto, vuelve a intentarlo");
+            }
+        }
     }
 
     public static void crearTablaEmpleados() {
