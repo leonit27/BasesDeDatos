@@ -2,18 +2,20 @@ package ejercicioSQLite;
 
 import java.sql.*;
 
-public class Clientes {
+public class Empleados {
+    private String IDempleado;
     private String DNI;
     private String nombre;
     private String apellidos;
 
-    public Clientes(String DNI, String nombre, String apellidos) {
+    public Empleados(String IDempleado, String DNI, String nombre, String apellidos) {
+        this.IDempleado =  IDempleado;
         this.DNI = DNI;
         this.nombre = nombre;
         this.apellidos = apellidos;
     }
 
-    public static void crearTablaClientes() {
+    public static void crearTablaEmpleados() {
         Connection conn = null;
         Statement st = null;
         String sql;
@@ -22,7 +24,7 @@ public class Clientes {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.createStatement();
 
-            sql = "CREATE TABLE clientes(DNI varchar(9) CONSTRAINT DNI PRIMARY KEY, Nombre varchar(20), Apellidos varchar(50))";
+            sql = "CREATE TABLE empleados(IDempleado varchar(10) CONSTRAINT IDempleado PRIMARY KEY, DNI varchar(9), Nombre varchar(20), Apellidos varchar(50))";
             st.executeUpdate(sql);
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -40,7 +42,7 @@ public class Clientes {
         }
     }
 
-    public static void eliminarTablaClientes() {
+    public static void eliminarTablaEmpleados() {
         Connection conn = null;
         Statement st = null;
         String sql;
@@ -49,7 +51,7 @@ public class Clientes {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.createStatement();
 
-            sql = "DROP TABLE clientes";
+            sql = "DROP TABLE empleados";
             st.executeUpdate(sql);
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -67,19 +69,20 @@ public class Clientes {
         }
     }
 
-    public static void agregarClientes(String DNI, String nombre, String apellidos) {
+    public static void agregarEmpleados(String IDempleado, String DNI, String nombre, String apellidos) {
         PreparedStatement st = null;
         Connection conn = null;
 
-        String sql = "INSERT INTO clientes(DNI, Nombre, Apellidos) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO empleados(IDempleado, DNI, Nombre, Apellidos) VALUES (?, ?, ?, ?)";
 
         try {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.prepareStatement(sql);
 
-            st.setString(1, DNI);
-            st.setString(2, nombre);
-            st.setString(3, apellidos);
+            st.setString(1, IDempleado);
+            st.setString(2, DNI);
+            st.setString(3, nombre);
+            st.setString(4, apellidos);
             st.executeUpdate();
         } catch (SQLException ex){
             System.out.println("Error "+ ex.getMessage());
@@ -97,7 +100,7 @@ public class Clientes {
         }
     }
 
-    public static void mostrarCliente(String DNI) {
+    public static void mostrarEmpleado(String IDempleado) {
         Connection conn = null;
         Statement st = null;
         ResultSet rs = null;
@@ -105,15 +108,16 @@ public class Clientes {
         try {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.createStatement();
-            rs = st.executeQuery("SELECT * FROM clientes WHERE DNI = '" + DNI + "'");
+            rs = st.executeQuery("SELECT * FROM empleados WHERE IDempleado = '" + IDempleado + "'");
 
-            System.out.println("DNI\t\tNombre\t\tApellidos" +
+            System.out.println("IDempleado\t\tDNI\t\tNombre\t\tApellidos" +
                     "----------------------------------------------");
 
             while (rs.next()) {
                 System.out.print(rs.getString(1) + "\t");
                 System.out.print(rs.getString(2) + "\t");
-                System.out.println(rs.getString(3));
+                System.out.print(rs.getString(3) + "\t");
+                System.out.println(rs.getString(4));
             }
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -138,7 +142,7 @@ public class Clientes {
         }
     }
 
-    public static void modificarCliente(String DNI, String nombre, String apellidos) {
+    public static void modificarEmpleado(String IDempleado, String DNI, String nombre, String apellidos) {
         Connection conn = null;
         Statement st = null;
         String sql;
@@ -147,7 +151,7 @@ public class Clientes {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.createStatement();
 
-            sql = "UPDATE clientes SET DNI = '" + DNI + "', Nombre = " + nombre + ", Apellidos = '" + apellidos + "'";
+            sql = "UPDATE empleados SET IDempleado = '" + IDempleado + "', DNI = '" + DNI + "', Nombre = " + nombre + ", Apellidos = '" + apellidos + "'";
             st.executeUpdate(sql);
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -165,7 +169,7 @@ public class Clientes {
         }
     }
 
-    public static void eliminarCliente(String DNI) {
+    public static void eliminarEmpleado(String IDempleado) {
         Connection conn = null;
         Statement st = null;
         String sql;
@@ -174,7 +178,7 @@ public class Clientes {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.createStatement();
 
-            sql = "DELETE FROM clientes WHERE DNI = '" + DNI + "'";
+            sql = "DELETE FROM empleados WHERE IDempleado = '" + IDempleado + "'";
             st.executeUpdate(sql);
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -200,15 +204,16 @@ public class Clientes {
         try {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.createStatement();
-            rs = st.executeQuery("SELECT * FROM clientes");
+            rs = st.executeQuery("SELECT * FROM empleados");
 
-            System.out.println("DNI\t\tNombre\t\tApellidos" +
+            System.out.println("IDempleado\t\tDNI\t\tNombre\t\tApellidos" +
                     "-----------------------------------------");
 
             while (rs.next()) {
                 System.out.print(rs.getString(1) + "\t");
                 System.out.print(rs.getString(2) + "\t");
-                System.out.println(rs.getString(3));
+                System.out.print(rs.getString(3) + "\t");
+                System.out.println(rs.getString(4));
             }
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());

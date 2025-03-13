@@ -7,8 +7,6 @@ public class Main {
         Scanner s = new Scanner(System.in);
         int opcionSeleccionada = 1;
 
-        Clientes.crearTablaClientes();
-
         while (opcionSeleccionada != 0) {
             System.out.println("Menú de gestión del videoclub\n" +
                     "----------------------------------");
@@ -16,7 +14,7 @@ public class Main {
             System.out.print("0. Salir del programa\n" +
                     "1. Gestión de películas\n" +
                     "2. Gestión de clientes\n" +
-                    "3. Gestión de ??????????\n" +
+                    "3. Gestión de empleados\n" +
                     "4. Creación de tablas\n" +
                     "5. Eliminación de tablas\n" +
                     "Elige una opción: ");
@@ -103,6 +101,7 @@ public class Main {
                         }
                     }
                     opcionSeleccionada = 1;
+                    break;
                 case 2:
                     while (opcionSeleccionada != 0) {
                         System.out.println("Menú de gestión de clientes\n" +
@@ -166,6 +165,133 @@ public class Main {
                         }
                     }
                     opcionSeleccionada = 1;
+                    break;
+                case 3:
+                    while (opcionSeleccionada != 0) {
+                        System.out.println("Menú de gestión de empleados\n" +
+                                "------------------------------");
+
+                        System.out.print("0. Volver atrás\n" +
+                                "1. Agregar un empleado\n" +
+                                "2. Mostrar los datos de un empleado\n" +
+                                "3. Modificar datos de un empleado\n" +
+                                "4. Eliminar empleado\n" +
+                                "5. Mostrar todos los empleados\n" +
+                                "Elige una opción: ");
+                        opcionSeleccionada = s.nextInt();
+                        s.nextLine();
+
+                        switch (opcionSeleccionada) {
+                            case 0:
+                                System.out.println("Saliendo del menú de gestión de empleados...");
+                                break;
+                            case 1:
+                                System.out.print("IDempleado: ");
+                                String IDempleadoAgregado = s.nextLine();
+
+                                System.out.print("DNI: ");
+                                String DNIagregado = s.nextLine();
+
+                                System.out.print("Nombre: ");
+                                String nombreAgregado = s.nextLine();
+
+                                System.out.print("Apellidos: ");
+                                String apellidosAgregados = s.nextLine();
+
+                                Empleados.agregarEmpleados(IDempleadoAgregado, DNIagregado, nombreAgregado, apellidosAgregados);
+                                break;
+                            case 2:
+                                System.out.print("Introduce el IDempleado del empleado que quieras ver los datos: ");
+                                String IDempleadoVisualizado = s.nextLine();
+
+                                Empleados.mostrarEmpleado(IDempleadoVisualizado);
+                                break;
+                            case 3:
+                                System.out.print("Introduce el IDempleado del empleado que quieras modificar los datos: ");
+                                String IDempleadoModificado = s.nextLine();
+
+                                System.out.print("Nuevo DNI: ");
+                                String DNImodificado = s.nextLine();
+
+                                System.out.print("Nuevo nombre: ");
+                                String nombreModificado = s.nextLine();
+
+                                System.out.print("Nuevos apellidos: ");
+                                String apellidosModificados = s.nextLine();
+
+                                Empleados.modificarEmpleado(IDempleadoModificado, DNImodificado, nombreModificado, apellidosModificados);
+                                break;
+                            case 4:
+                                System.out.print("Introduce el IDempleado del empleado que deseas eliminar: ");
+                                String IDempleadoEliminado = s.nextLine();
+
+                                Empleados.eliminarEmpleado(IDempleadoEliminado);
+                                break;
+                            case 5:
+                                Empleados.mostrarTabla();
+                                break;
+                            default:
+                                System.out.println("Número introducido incorrecto, vuelve a intentarlo");
+                        }
+                    }
+                    opcionSeleccionada = 1;
+                    break;
+                case 4:
+                    while (opcionSeleccionada != 0) {
+                        System.out.println("Menú de gestión de creación de tablas\n" +
+                                "----------------------------------------");
+
+                        System.out.print("0. Volver atrás\n" +
+                                "1. Crear tabla clientes\n" +
+                                "2. Crear tabla empleados\n" +
+                                "Elige una opción: ");
+                        opcionSeleccionada = s.nextInt();
+                        s.nextLine();
+
+                        switch (opcionSeleccionada) {
+                            case 0:
+                                System.out.println("Saliendo del menú de gestión de creación de tablas...");
+                                break;
+                            case 1:
+                                Clientes.crearTablaClientes();
+                                break;
+                            case 2:
+                                Empleados.crearTablaEmpleados();
+                                break;
+                            default:
+                                System.out.println("Número introducido incorrecto, vuelve a intentarlo");
+                        }
+                    }
+                    opcionSeleccionada = 1;
+                    break;
+                case 5:
+                    while (opcionSeleccionada != 0) {
+                        System.out.println("Menú de gestión de eliminación de tablas\n" +
+                                "--------------------------------------------");
+
+                        System.out.print("0. Volver atrás\n" +
+                                "1. Eliminar tabla clientes\n" +
+                                "2. Eliminar tabla empleados\n" +
+                                "Elige una opción: ");
+                        opcionSeleccionada = s.nextInt();
+                        s.nextLine();
+
+                        switch (opcionSeleccionada) {
+                            case 0:
+                                System.out.println("Saliendo del menú de gestión de eliminación de tablas...");
+                                break;
+                            case 1:
+                                Clientes.eliminarTablaClientes();
+                                break;
+                            case 2:
+                                Empleados.eliminarTablaEmpleados();
+                                break;
+                            default:
+                                System.out.println("Número introducido incorrecto, vuelve a intentarlo");
+                        }
+                    }
+                    opcionSeleccionada = 1;
+                    break;
             }
         }
     }
