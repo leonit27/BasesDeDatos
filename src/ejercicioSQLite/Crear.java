@@ -28,6 +28,7 @@ public class Crear {
                     break;
                 case 3:
                     Reservas.crearTablaReservas();
+                    break;
                 default:
                     System.out.println("Número introducido incorrecto, vuelve a intentarlo");
             }

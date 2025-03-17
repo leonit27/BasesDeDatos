@@ -28,7 +28,7 @@ public class Reservas {
                     "2. Mostrar los datos de una reserva\n" +
                     "3. Modificar datos de una reserva\n" +
                     "4. Eliminar reserva\n" +
-                    "5. Mostrar todos las reservas\n" +
+                    "5. Mostrar todas las reservas\n" +
                     "Elige una opción: ");
             opcionSeleccionada = s.nextInt();
             s.nextLine();
@@ -88,6 +88,11 @@ public class Reservas {
                 case 5:
                     Reservas.mostrarTabla();
                     break;
+                case 6:
+                    System.out.print("Introduce el ID de la reserva que deseas imprimir: ");
+                    String idReservaImpreso = s.nextLine();
+
+                    Reservas.imprimirReservaPorID(idReservaImpreso);
                 default:
                     System.out.println("Número introducido incorrecto, vuelve a intentarlo");
             }
@@ -103,8 +108,9 @@ public class Reservas {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.createStatement();
 
-            sql = "CREATE TABLE reservas(idReserva varchar(9) CONSTRAINT idReserva PRIMARY KEY, DNIcliente varchar(9) FOREIGN KEY (DNIcliente) REFERENCES clientes(DNI), " +
-                    "TituloPelicula varchar(50) FOREIGN KEY (tituloPelicula) REFERENCES peliculas(Titulo), FechaInicio date, FechaFinal date)";
+            sql = "CREATE TABLE reservas(idReserva varchar(9) CONSTRAINT idReserva PRIMARY KEY, DNIcliente varchar(9), " +
+                    "TituloPelicula varchar(50), FechaInicio date, FechaFinal date, CONSTRAINT DNIcliente FOREIGN KEY (DNIcliente) REFERENCES clientes(DNI), "+
+                    "CONSTRAINT TituloPelicula FOREIGN KEY (TituloPelicula) REFERENCES peliculas(Título))";
             st.executeUpdate(sql);
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -191,7 +197,7 @@ public class Reservas {
             st = conn.createStatement();
             rs = st.executeQuery("SELECT * FROM reservas WHERE idReserva = '" + idReserva + "'");
 
-            System.out.println("idReserva\t\tDNIcliente\t\tTituloPelicula\t\tFechaInicio\t\tFechaFinal" +
+            System.out.println("idReserva\t\tDNIcliente\t\tTituloPelicula\t\tFechaInicio\t\tFechaFinal\n" +
                     "-------------------------------------------------------");
 
             while (rs.next()) {
@@ -221,6 +227,29 @@ public class Reservas {
             } catch (SQLException ex) {
                 System.out.println("Se ha producido un error al cerrar el ResultSet: " + ex.getMessage());
             }
+        }
+    }
+
+    public static void imprimirReservaPorID(String idReserva) {
+        String sql = "SELECT idReserva, Nombre as Cliente, Título, FechaInicio, FechaFinal FROM reservas JOIN clientes ON reservas.DNIcliente = DNI " +
+                "JOIN peliculas ON reservas.TituloPelicula = Título " +
+                "WHERE idReserva = ?";
+
+        try (Connection conn = DatabaseConnectionVideoclub.getConnection();
+            PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setString(1, idReserva);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                System.out.printf("|| %15s: %-20s ||\n", "ID reserva", rs.getString("idReserva"));
+                System.out.printf("|| %15s: %-20s ||\n", "Cliente", rs.getString("Cliente"));
+                System.out.printf("|| %15s: %-20s ||\n", "Título", rs.getString("Título"));
+                System.out.printf("|| %15s: %-20s ||\n", "FechaInicio", rs.getDate("FechaInicio"));
+                System.out.printf("|| %15s: %-20s ||\n", "FechaFinal", rs.getDate("FechaFinal"));
+
+            } else System.out.println("No se encontró una reserva con ese ID");
+        } catch (SQLException ex) {
+            System.out.println("Error al consultar la reserva: " + ex.getMessage());
         }
     }
 
@@ -288,7 +317,7 @@ public class Reservas {
             st = conn.createStatement();
             rs = st.executeQuery("SELECT * FROM reservas");
 
-            System.out.println("idReserva\t\tDNIcliente\t\tTituloPelicula\t\tFechaInicio\t\tFechaFinal" +
+            System.out.println("idReserva\t\tDNIcliente\t\tTituloPelicula\t\tFechaInicio\t\tFechaFinal\n" +
                     "-----------------------------------------------------");
 
             while (rs.next()) {

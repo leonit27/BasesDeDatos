@@ -28,6 +28,7 @@ public class Eliminar {
                     break;
                 case 3:
                     Reservas.eliminarTablaReservas();
+                    break;
                 default:
                     System.out.println("Número introducido incorrecto, vuelve a intentarlo");
             }

@@ -267,7 +267,7 @@ public class Clientes {
             st = conn.createStatement();
             rs = st.executeQuery("SELECT * FROM clientes");
 
-            System.out.println("DNI\t\tNombre\t\tApellidos" +
+            System.out.println("DNI\t\tNombre\t\tApellidos\n" +
                     "-----------------------------------------");
 
             while (rs.next()) {
