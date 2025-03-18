@@ -29,6 +29,7 @@ public class Reservas {
                     "3. Modificar datos de una reserva\n" +
                     "4. Eliminar reserva\n" +
                     "5. Mostrar todas las reservas\n" +
+                    "6. Imprimir reserva por ID\n" +
                     "Elige una opción: ");
             opcionSeleccionada = s.nextInt();
             s.nextLine();
@@ -93,6 +94,7 @@ public class Reservas {
                     String idReservaImpreso = s.nextLine();
 
                     Reservas.imprimirReservaPorID(idReservaImpreso);
+                    break;
                 default:
                     System.out.println("Número introducido incorrecto, vuelve a intentarlo");
             }
@@ -108,10 +110,11 @@ public class Reservas {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.createStatement();
 
-            sql = "CREATE TABLE reservas(idReserva varchar(9) CONSTRAINT idReserva PRIMARY KEY, DNIcliente varchar(9), " +
-                    "TituloPelicula varchar(50), FechaInicio date, FechaFinal date, CONSTRAINT DNIcliente FOREIGN KEY (DNIcliente) REFERENCES clientes(DNI), "+
+            sql = "DROP TABLE reservas; CREATE TABLE reservas(idReserva varchar(9) CONSTRAINT idReserva PRIMARY KEY, DNIcliente varchar(9), " +
+                    "TituloPelicula varchar(50), FechaInicio varchar(10), FechaFinal varchar(10), CONSTRAINT DNIcliente FOREIGN KEY (DNIcliente) REFERENCES clientes(DNI), "+
                     "CONSTRAINT TituloPelicula FOREIGN KEY (TituloPelicula) REFERENCES peliculas(Título))";
             st.executeUpdate(sql);
+            System.out.println("Tabla creada correctamente.");
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
         } finally {
@@ -230,29 +233,6 @@ public class Reservas {
         }
     }
 
-    public static void imprimirReservaPorID(String idReserva) {
-        String sql = "SELECT idReserva, Nombre as Cliente, Título, FechaInicio, FechaFinal FROM reservas JOIN clientes ON reservas.DNIcliente = DNI " +
-                "JOIN peliculas ON reservas.TituloPelicula = Título " +
-                "WHERE idReserva = ?";
-
-        try (Connection conn = DatabaseConnectionVideoclub.getConnection();
-            PreparedStatement st = conn.prepareStatement(sql)) {
-            st.setString(1, idReserva);
-            ResultSet rs = st.executeQuery();
-
-            if (rs.next()) {
-                System.out.printf("|| %15s: %-20s ||\n", "ID reserva", rs.getString("idReserva"));
-                System.out.printf("|| %15s: %-20s ||\n", "Cliente", rs.getString("Cliente"));
-                System.out.printf("|| %15s: %-20s ||\n", "Título", rs.getString("Título"));
-                System.out.printf("|| %15s: %-20s ||\n", "FechaInicio", rs.getDate("FechaInicio"));
-                System.out.printf("|| %15s: %-20s ||\n", "FechaFinal", rs.getDate("FechaFinal"));
-
-            } else System.out.println("No se encontró una reserva con ese ID");
-        } catch (SQLException ex) {
-            System.out.println("Error al consultar la reserva: " + ex.getMessage());
-        }
-    }
-
     public static void modificarReserva(String idReserva, String DNIcliente, String tituloPelicula, String fechaInicio, String fechaFinal) {
         Connection conn = null;
         Statement st = null;
@@ -318,8 +298,7 @@ public class Reservas {
             rs = st.executeQuery("SELECT * FROM reservas");
 
             System.out.println("idReserva\t\tDNIcliente\t\tTituloPelicula\t\tFechaInicio\t\tFechaFinal\n" +
-                    "-----------------------------------------------------");
-
+                    "-------------------------------------------------------------------------------");
             while (rs.next()) {
                 System.out.print(rs.getString(1) + "\t");
                 System.out.print(rs.getString(2) + "\t");
@@ -347,6 +326,33 @@ public class Reservas {
             } catch (SQLException ex) {
                 System.out.println("Se ha producido un error al cerrar el ResultSet: " + ex.getMessage());
             }
+        }
+    }
+
+    public static void imprimirReservaPorID(String idReserva) {
+        String sql = "SELECT idReserva, Nombre as Cliente, Título, FechaInicio, FechaFinal FROM reservas JOIN clientes ON reservas.DNIcliente = DNI " +
+                "JOIN peliculas ON reservas.TituloPelicula = Título " +
+                "WHERE idReserva = ?";
+
+        try (Connection conn = DatabaseConnectionVideoclub.getConnection();
+             PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setString(1, idReserva);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("╔════════════════════════════════════════╗");
+                System.out.println("║           DETALLE DE RESERVA           ║");
+                System.out.println("╠════════════════════════════════════════╣");
+                System.out.printf("║ %15s: %-20s  ║\n", "ID reserva", rs.getString("idReserva"));
+                System.out.printf("║ %15s: %-20s  ║\n", "Cliente", rs.getString("Cliente"));
+                System.out.printf("║ %15s: %-20s  ║\n", "Título", rs.getString("Título"));
+                System.out.printf("║ %15s: %-20s  ║\n", "FechaInicio", rs.getString("FechaInicio"));
+                System.out.printf("║ %15s: %-20s  ║\n", "FechaFinal", rs.getString("FechaFinal"));
+                System.out.println("╚════════════════════════════════════════╝");
+
+            } else System.out.println("No se encontró una reserva con ese ID");
+        } catch (SQLException ex) {
+            System.out.println("Error al consultar la reserva: " + ex.getMessage());
         }
     }
 }
