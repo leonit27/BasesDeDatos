@@ -142,6 +142,8 @@ public class Reservas {
 
             sql = "DROP TABLE reservas";
             st.executeUpdate(sql);
+
+            System.out.println("Tabla eliminada correctamente.");
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
         } finally {
@@ -174,6 +176,8 @@ public class Reservas {
             st.setString(4, fechaInicio);
             st.setString(5, fechaFinal);
             st.executeUpdate();
+
+            System.out.println("Reserva agregada correctamente.");
         } catch (SQLException ex){
             System.out.println("Error "+ ex.getMessage());
         } finally {
@@ -244,6 +248,8 @@ public class Reservas {
 
             sql = "UPDATE reservas SET idReserva = '" + idReserva + "', DNIcliente = " + DNIcliente + ", TituloPelicula = '" + tituloPelicula + "', FechaInicio = '" + fechaInicio + "', FechaFinal = '" + fechaFinal + "'";
             st.executeUpdate(sql);
+
+            System.out.println("Reserva modificada correctamente.");
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
         } finally {
@@ -271,6 +277,8 @@ public class Reservas {
 
             sql = "DELETE FROM reservas WHERE idReserva = '" + idReserva + "'";
             st.executeUpdate(sql);
+
+            System.out.println("Reserva eliminada correctamente.");
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
         } finally {

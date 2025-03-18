@@ -30,7 +30,7 @@ public class Eliminar {
                     Reservas.eliminarTablaReservas();
                     break;
                 default:
-                    System.out.println("Número introducido incorrecto, vuelve a intentarlo");
+                    System.out.println("Número introducido incorrecto, vuelve a intentarlo.");
             }
         }
     }
