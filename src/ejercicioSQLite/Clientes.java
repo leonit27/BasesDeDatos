@@ -1,7 +1,8 @@
 package ejercicioSQLite;
 
+import javax.swing.*;
+import java.awt.*;
 import java.sql.*;
-import java.util.Scanner;
 
 public class Clientes {
     private String DNI;
@@ -12,124 +13,6 @@ public class Clientes {
         this.DNI = DNI;
         this.nombre = nombre;
         this.apellidos = apellidos;
-    }
-
-    public static void menuClientes(int opcionSeleccionada, Scanner s) {
-        while (opcionSeleccionada != 0) {
-            System.out.println("Menú de gestión de clientes\n" +
-                    "------------------------------");
-
-            System.out.print("0. Volver atrás\n" +
-                    "1. Agregar un cliente\n" +
-                    "2. Mostrar los datos de un cliente\n" +
-                    "3. Modificar datos de un cliente\n" +
-                    "4. Eliminar cliente\n" +
-                    "5. Mostrar todos los clientes\n" +
-                    "Elige una opción: ");
-            opcionSeleccionada = s.nextInt();
-            s.nextLine();
-
-            switch (opcionSeleccionada) {
-                case 0:
-                    System.out.println("Saliendo del menú de gestión de clientes...");
-                    break;
-                case 1:
-                    System.out.print("DNI: ");
-                    String DNIagregado = s.nextLine();
-
-                    System.out.print("Nombre: ");
-                    String nombreAgregado = s.nextLine();
-
-                    System.out.print("Apellidos: ");
-                    String apellidosAgregados = s.nextLine();
-
-                    Clientes.agregarClientes(DNIagregado, nombreAgregado, apellidosAgregados);
-                    break;
-                case 2:
-                    System.out.print("Introduce el DNI del cliente que quieras ver los datos: ");
-                    String DNIvisualizado = s.nextLine();
-
-                    Clientes.mostrarCliente(DNIvisualizado);
-                    break;
-                case 3:
-                    System.out.print("Introduce el DNI del cliente que quieras modificar los datos: ");
-                    String DNImodificado = s.nextLine();
-
-                    System.out.print("Nuevo nombre: ");
-                    String nombreModificado = s.nextLine();
-
-                    System.out.print("Nuevos apellidos: ");
-                    String apellidosModificados = s.nextLine();
-
-                    Clientes.modificarCliente(DNImodificado, nombreModificado, apellidosModificados);
-                    break;
-                case 4:
-                    System.out.print("Introduce el DNI del cliente que deseas eliminar: ");
-                    String DNIeliminado = s.nextLine();
-
-                    Clientes.eliminarCliente(DNIeliminado);
-                    break;
-                case 5:
-                    Clientes.mostrarTabla();
-                    break;
-                default:
-                    System.out.println("Número introducido incorrecto, vuelve a intentarlo");
-            }
-        }
-    }
-
-    public static void crearTablaClientes() {
-        Connection conn = null;
-        Statement st = null;
-        String sql;
-
-        try {
-            conn = DatabaseConnectionVideoclub.getConnection();
-            st = conn.createStatement();
-
-            sql = "CREATE TABLE clientes(DNI varchar(9) CONSTRAINT DNI PRIMARY KEY, Nombre varchar(20), Apellidos varchar(50))";
-            st.executeUpdate(sql);
-        } catch (SQLException ex) {
-            System.out.println("Error: " + ex.getMessage());
-        } finally {
-            try {
-                if (st != null && !st.isClosed()) st.close();
-            } catch (SQLException ex) {
-                System.out.println("No se ha podido cerrar el Statement por alguna razón");
-            }
-            try {
-                if (conn != null && !conn.isClosed()) conn.close();
-            } catch (SQLException ex) {
-                System.out.println("No se ha podido cerrar la connexion por alguna razón");
-            }
-        }
-    }
-
-    public static void eliminarTablaClientes() {
-        Connection conn = null;
-        Statement st = null;
-        String sql;
-
-        try {
-            conn = DatabaseConnectionVideoclub.getConnection();
-            st = conn.createStatement();
-
-            sql = "DROP TABLE clientes";
-            st.executeUpdate(sql);
-        } catch (SQLException ex) {
-            System.out.println("Error: " + ex.getMessage());
-        } finally {
-            try {
-                if (st != null && !st.isClosed()) st.close();
-            } catch (SQLException ex) {
-                System.out.println("No se ha podido cerrar el Statement por alguna razón");
-            }
-            try {
-                if (conn != null && !conn.isClosed()) conn.close();
-            } catch (SQLException ex) {
-                System.out.println("No se ha podido cerrar la connexion por alguna razón");
-            }
-        }
     }
 
     public static void agregarClientes(String DNI, String nombre, String apellidos) {
@@ -172,14 +55,77 @@ public class Clientes {
             st = conn.createStatement();
             rs = st.executeQuery("SELECT * FROM clientes WHERE DNI = '" + DNI + "'");
 
-            System.out.println("DNI\t\tNombre\t\tApellidos" +
-                    "----------------------------------------------");
+            //Creamos el frame con sus respectivas características
+            JFrame frameMostrarDatosConsultaCliente = new JFrame("Datos " + DNI);
+            frameMostrarDatosConsultaCliente.setLayout(new GridLayout(2, 3));
+            frameMostrarDatosConsultaCliente.setSize(600, 200);
+            frameMostrarDatosConsultaCliente.setResizable(false);
+            frameMostrarDatosConsultaCliente.setLocationRelativeTo(null);
+
+            //Creamos las etiquetas que encabezan la tabla
+            JLabel labelDNICliente = new JLabel("DNI");
+            JLabel labelNombre = new JLabel("Nombre");
+            JLabel labelApellidos = new JLabel("Apellidos");
+
+            //Centramos el texto de las etiquetas
+            labelDNICliente.setHorizontalAlignment(SwingConstants.CENTER);
+            labelNombre.setHorizontalAlignment(SwingConstants.CENTER);
+            labelApellidos.setHorizontalAlignment(SwingConstants.CENTER);
+
+            //Ponemos borde a las etiquetas
+            labelDNICliente.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            labelNombre.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            labelApellidos.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+            //Definimos las etiquetas opacas para poder cambiarles el color
+            labelDNICliente.setOpaque(true);
+            labelNombre.setOpaque(true);
+            labelApellidos.setOpaque(true);
+
+            //Cambiamos el color de las etiquetas
+            labelDNICliente.setBackground(new Color(125, 210, 181));
+            labelNombre.setBackground(new Color(125, 210, 181));
+            labelApellidos.setBackground(new Color(125, 210, 181));
+            
+            //Añadimos las etiquetas al frame
+            frameMostrarDatosConsultaCliente.add(labelDNICliente);
+            frameMostrarDatosConsultaCliente.add(labelNombre);
+            frameMostrarDatosConsultaCliente.add(labelApellidos);
+
+            //Creamos las etiquetas con la información
+            JLabel labelDNIClienteConsultado = new JLabel();
+            JLabel labelNombreClienteConsultado = new JLabel();
+            JLabel labelApellidosClienteConsultado = new JLabel();
+
+            //Centramos el texto de las etiquetas
+            labelDNIClienteConsultado.setHorizontalAlignment(SwingConstants.CENTER);
+            labelNombreClienteConsultado.setHorizontalAlignment(SwingConstants.CENTER);
+            labelApellidosClienteConsultado.setHorizontalAlignment(SwingConstants.CENTER);
+
+            //Definimos las etiquetas opacas para poder cambiarles el color
+            labelDNIClienteConsultado.setOpaque(true);
+            labelNombreClienteConsultado.setOpaque(true);
+            labelApellidosClienteConsultado.setOpaque(true);
+
+            //Cambiamos el color de las etiquetas
+            labelDNIClienteConsultado.setBackground(new Color(198, 232, 210));
+            labelNombreClienteConsultado.setBackground(new Color(198, 232, 210));
+            labelApellidosClienteConsultado.setBackground(new Color(198, 232, 210));
 
             while (rs.next()) {
-                System.out.print(rs.getString(1) + "\t");
-                System.out.print(rs.getString(2) + "\t");
-                System.out.println(rs.getString(3));
+                //Añadimos información a las etiquetas según la base de datos
+                labelDNIClienteConsultado.setText(rs.getString(1));
+                labelNombreClienteConsultado.setText(rs.getString(2));
+                labelApellidosClienteConsultado.setText(rs.getString(3));
             }
+
+            //Añadimos las etiquetas al frame
+            frameMostrarDatosConsultaCliente.add(labelDNIClienteConsultado);
+            frameMostrarDatosConsultaCliente.add(labelNombreClienteConsultado);
+            frameMostrarDatosConsultaCliente.add(labelApellidosClienteConsultado);
+
+            //Hacemos el frame visible
+            frameMostrarDatosConsultaCliente.setVisible(true);
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
         } finally {
@@ -212,7 +158,7 @@ public class Clientes {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.createStatement();
 
-            sql = "UPDATE clientes SET DNI = '" + DNI + "', Nombre = " + nombre + ", Apellidos = '" + apellidos + "'";
+            sql = "UPDATE clientes SET Nombre = '" + nombre + "', Apellidos = '" + apellidos + "' WHERE DNI = '" + DNI + "'";
             st.executeUpdate(sql);
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
@@ -267,14 +213,82 @@ public class Clientes {
             st = conn.createStatement();
             rs = st.executeQuery("SELECT * FROM clientes");
 
-            System.out.println("DNI\t\tNombre\t\tApellidos\n" +
-                    "-----------------------------------------");
+            //Creamos el frame con sus respectivas características
+            JFrame frameMostrarTodosClientes = new JFrame("Mostrar Todos Clientes");
+            frameMostrarTodosClientes.setSize(900, 600);
+            frameMostrarTodosClientes.setResizable(false);
+            frameMostrarTodosClientes.setLocationRelativeTo(null);
+
+            //Creamos las etiquetas que encabezan la tabla
+            JLabel labelDNICliente = new JLabel("DNI");
+            JLabel labelNombre = new JLabel("Nombre");
+            JLabel labelApellidos = new JLabel("Apellidos");
+
+            //Centramos el texto de las etiquetas
+            labelDNICliente.setHorizontalAlignment(SwingConstants.CENTER);
+            labelNombre.setHorizontalAlignment(SwingConstants.CENTER);
+            labelApellidos.setHorizontalAlignment(SwingConstants.CENTER);
+
+            //Ponemos borde a las etiquetas
+            labelDNICliente.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            labelNombre.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            labelApellidos.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+            //Definimos las etiquetas opacas para poder cambiarles el color
+            labelDNICliente.setOpaque(true);
+            labelNombre.setOpaque(true);
+            labelApellidos.setOpaque(true);
+
+            //Cambiamos el color de las etiquetas
+            labelDNICliente.setBackground(new Color(125, 210, 181));
+            labelNombre.setBackground(new Color(125, 210, 181));
+            labelApellidos.setBackground(new Color(125, 210, 181));
+
+            //Añadimos las etiquetas al frame
+            frameMostrarTodosClientes.add(labelDNICliente);
+            frameMostrarTodosClientes.add(labelNombre);
+            frameMostrarTodosClientes.add(labelApellidos);
+
+            //Creamos el contador para saber cuantas filas tendrá el layout
+            int contadorFilas = 2;
 
             while (rs.next()) {
-                System.out.print(rs.getString(1) + "\t");
-                System.out.print(rs.getString(2) + "\t");
-                System.out.println(rs.getString(3));
+                //Modificamos el layout según las filas que tenga la tabla
+                frameMostrarTodosClientes.setLayout(new GridLayout(contadorFilas++, 3));
+
+                //Creamos las etiquetas con la información
+                JLabel labelDNIClienteMostrado = new JLabel();
+                JLabel labelNombreMostrado = new JLabel();
+                JLabel labelApellidosMostrados = new JLabel();
+
+                //Centramos el texto de las etiquetas
+                labelDNIClienteMostrado.setHorizontalAlignment(SwingConstants.CENTER);
+                labelNombreMostrado.setHorizontalAlignment(SwingConstants.CENTER);
+                labelApellidosMostrados.setHorizontalAlignment(SwingConstants.CENTER);
+
+                //Definimos las etiquetas opacas para poder cambiarles el color
+                labelDNIClienteMostrado.setOpaque(true);
+                labelNombreMostrado.setOpaque(true);
+                labelApellidosMostrados.setOpaque(true);
+
+                //Cambiamos el color de las etiquetas
+                labelDNIClienteMostrado.setBackground(new Color(198, 232, 210));
+                labelNombreMostrado.setBackground(new Color(198, 232, 210));
+                labelApellidosMostrados.setBackground(new Color(198, 232, 210));
+
+                //Vamos añadiendo información a las etiquetas según la base de datos
+                labelDNIClienteMostrado.setText(rs.getString(1));
+                labelNombreMostrado.setText(rs.getString(2));
+                labelApellidosMostrados.setText(rs.getString(3));
+
+                //Añadimos las etiquetas al frame
+                frameMostrarTodosClientes.add(labelDNIClienteMostrado);
+                frameMostrarTodosClientes.add(labelNombreMostrado);
+                frameMostrarTodosClientes.add(labelApellidosMostrados);
             }
+
+            //Hacemos el frame visible
+            frameMostrarTodosClientes.setVisible(true);
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
         } finally {

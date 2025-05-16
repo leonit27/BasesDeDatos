@@ -1,7 +1,8 @@
 package ejercicioSQLite;
 
+import javax.swing.*;
+import java.awt.*;
 import java.sql.*;
-import java.util.Scanner;
 
 public class Reservas {
     private String idReserva;
@@ -16,148 +17,6 @@ public class Reservas {
         this.tituloPelicula = tituloPelicula;
         this.fechaInicio = fechaInicio;
         this.fechaFinal = fechaFinal;
-    }
-
-    public static void menuReservas(int opcionSeleccionada, Scanner s) {
-        while (opcionSeleccionada != 0) {
-            System.out.println("Menú de gestión de reservas\n" +
-                    "------------------------------");
-
-            System.out.print("0. Volver atrás\n" +
-                    "1. Agregar una reserva\n" +
-                    "2. Mostrar los datos de una reserva\n" +
-                    "3. Modificar datos de una reserva\n" +
-                    "4. Eliminar reserva\n" +
-                    "5. Mostrar todas las reservas\n" +
-                    "6. Imprimir reserva por ID\n" +
-                    "Elige una opción: ");
-            opcionSeleccionada = s.nextInt();
-            s.nextLine();
-
-            switch (opcionSeleccionada) {
-                case 0:
-                    System.out.println("Saliendo del menú de gestión de reservas...");
-                    break;
-                case 1:
-                    System.out.print("ID Reserva: ");
-                    String idReservaAgregado = s.nextLine();
-
-                    System.out.print("DNIcliente: ");
-                    String DNIclienteagregado = s.nextLine();
-
-                    System.out.print("Título de la película: ");
-                    String tituloPeliculaAgregada = s.nextLine();
-
-                    System.out.print("Fecha Inicio: ");
-                    String fechaInicioAgregada = s.nextLine();
-
-                    System.out.print("Fecha Final: ");
-                    String fechaFinalAgregada = s.nextLine();
-
-                    Reservas.agregarReservas(idReservaAgregado, DNIclienteagregado, tituloPeliculaAgregada, fechaInicioAgregada, fechaFinalAgregada);
-                    break;
-                case 2:
-                    System.out.print("Introduce el ID de la reserva que quieras ver los datos: ");
-                    String idReservaVisualizado = s.nextLine();
-
-                    Reservas.mostrarReserva(idReservaVisualizado);
-                    break;
-                case 3:
-                    System.out.print("Introduce el ID de la reserva que quieras modificar los datos: ");
-                    String idReservaModificado = s.nextLine();
-
-                    System.out.print("Nuevo DNI del cliente: ");
-                    String DNIclienteModificado = s.nextLine();
-
-                    System.out.print("Nuevo título de la película: ");
-                    String tituloPeliculaModificado = s.nextLine();
-
-                    System.out.print("Nueva fecha de inicio: ");
-                    String fechaInicioModificada = s.nextLine();
-
-                    System.out.print("Nueva fecha final: ");
-                    String fechaFinalModificada = s.nextLine();
-
-                    Reservas.modificarReserva(idReservaModificado, DNIclienteModificado, tituloPeliculaModificado, fechaInicioModificada, fechaFinalModificada);
-                    break;
-                case 4:
-                    System.out.print("Introduce el ID de la reserva que deseas eliminar: ");
-                    String idReservaEliminada = s.nextLine();
-
-                    Reservas.eliminarReservas(idReservaEliminada);
-                    break;
-                case 5:
-                    Reservas.mostrarTabla();
-                    break;
-                case 6:
-                    System.out.print("Introduce el ID de la reserva que deseas imprimir: ");
-                    String idReservaImpreso = s.nextLine();
-
-                    Reservas.imprimirReservaPorID(idReservaImpreso);
-                    break;
-                default:
-                    System.out.println("Número introducido incorrecto, vuelve a intentarlo");
-            }
-        }
-    }
-
-    public static void crearTablaReservas() {
-        Connection conn = null;
-        Statement st = null;
-        String sql;
-
-        try {
-            conn = DatabaseConnectionVideoclub.getConnection();
-            st = conn.createStatement();
-
-            sql = "DROP TABLE reservas; CREATE TABLE reservas(idReserva varchar(9) CONSTRAINT idReserva PRIMARY KEY, DNIcliente varchar(9), " +
-                    "TituloPelicula varchar(50), FechaInicio varchar(10), FechaFinal varchar(10), CONSTRAINT DNIcliente FOREIGN KEY (DNIcliente) REFERENCES clientes(DNI), "+
-                    "CONSTRAINT TituloPelicula FOREIGN KEY (TituloPelicula) REFERENCES peliculas(Título))";
-            st.executeUpdate(sql);
-            System.out.println("Tabla creada correctamente.");
-        } catch (SQLException ex) {
-            System.out.println("Error: " + ex.getMessage());
-        } finally {
-            try {
-                if (st != null && !st.isClosed()) st.close();
-            } catch (SQLException ex) {
-                System.out.println("No se ha podido cerrar el Statement por alguna razón");
-            }
-            try {
-                if (conn != null && !conn.isClosed()) conn.close();
-            } catch (SQLException ex) {
-                System.out.println("No se ha podido cerrar la connexion por alguna razón");
-            }
-        }
-    }
-
-    public static void eliminarTablaReservas() {
-        Connection conn = null;
-        Statement st = null;
-        String sql;
-
-        try {
-            conn = DatabaseConnectionVideoclub.getConnection();
-            st = conn.createStatement();
-
-            sql = "DROP TABLE reservas";
-            st.executeUpdate(sql);
-
-            System.out.println("Tabla eliminada correctamente.");
-        } catch (SQLException ex) {
-            System.out.println("Error: " + ex.getMessage());
-        } finally {
-            try {
-                if (st != null && !st.isClosed()) st.close();
-            } catch (SQLException ex) {
-                System.out.println("No se ha podido cerrar el Statement por alguna razón");
-            }
-            try {
-                if (conn != null && !conn.isClosed()) conn.close();
-            } catch (SQLException ex) {
-                System.out.println("No se ha podido cerrar la connexion por alguna razón");
-            }
-        }
     }
 
     public static void agregarReservas(String idReserva, String DNIcliente, String tituloPelicula, String fechaInicio, String fechaFinal) {
@@ -176,8 +35,6 @@ public class Reservas {
             st.setString(4, fechaInicio);
             st.setString(5, fechaFinal);
             st.executeUpdate();
-
-            System.out.println("Reserva agregada correctamente.");
         } catch (SQLException ex){
             System.out.println("Error "+ ex.getMessage());
         } finally {
@@ -204,16 +61,101 @@ public class Reservas {
             st = conn.createStatement();
             rs = st.executeQuery("SELECT * FROM reservas WHERE idReserva = '" + idReserva + "'");
 
-            System.out.println("idReserva\t\tDNIcliente\t\tTituloPelicula\t\tFechaInicio\t\tFechaFinal\n" +
-                    "-------------------------------------------------------");
+            //Creamos el frame con sus respectivas características
+            JFrame frameMostrarDatosConsultaReserva = new JFrame("Datos " + idReserva);
+            frameMostrarDatosConsultaReserva.setLayout(new GridLayout(2, 5));
+            frameMostrarDatosConsultaReserva.setSize(600, 200);
+            frameMostrarDatosConsultaReserva.setResizable(false);
+            frameMostrarDatosConsultaReserva.setLocationRelativeTo(null);
+
+            //Creamos las etiquetas que encabezan la tabla
+            JLabel labelIDReserva = new JLabel("ID Reserva");
+            JLabel labelDNICliente = new JLabel("DNI Cliente");
+            JLabel labelTituloPelicula = new JLabel("Título Película");
+            JLabel labelFechaInicio = new JLabel("Fecha Inicio");
+            JLabel labelFechaFinal = new JLabel("Fecha Final");
+
+            //Centramos el texto de las etiquetas
+            labelIDReserva.setHorizontalAlignment(SwingConstants.CENTER);
+            labelDNICliente.setHorizontalAlignment(SwingConstants.CENTER);
+            labelTituloPelicula.setHorizontalAlignment(SwingConstants.CENTER);
+            labelFechaInicio.setHorizontalAlignment(SwingConstants.CENTER);
+            labelFechaFinal.setHorizontalAlignment(SwingConstants.CENTER);
+
+            //Ponemos borde a las etiquetas
+            labelIDReserva.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            labelDNICliente.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            labelTituloPelicula.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            labelFechaInicio.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            labelFechaFinal.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+            //Definimos las etiquetas opacas para poder cambiarles el color
+            labelIDReserva.setOpaque(true);
+            labelDNICliente.setOpaque(true);
+            labelTituloPelicula.setOpaque(true);
+            labelFechaInicio.setOpaque(true);
+            labelFechaFinal.setOpaque(true);
+
+            //Cambiamos el color de las etiquetas
+            labelIDReserva.setBackground(new Color(125, 210, 181));
+            labelDNICliente.setBackground(new Color(125, 210, 181));
+            labelTituloPelicula.setBackground(new Color(125, 210, 181));
+            labelFechaInicio.setBackground(new Color(125, 210, 181));
+            labelFechaFinal.setBackground(new Color(125, 210, 181));
+
+            //Añadimos las etiquetas al frame
+            frameMostrarDatosConsultaReserva.add(labelIDReserva);
+            frameMostrarDatosConsultaReserva.add(labelDNICliente);
+            frameMostrarDatosConsultaReserva.add(labelTituloPelicula);
+            frameMostrarDatosConsultaReserva.add(labelFechaInicio);
+            frameMostrarDatosConsultaReserva.add(labelFechaFinal);
+
+            //Creamos las etiquetas con la información
+            JLabel labelIDReservaConsultada = new JLabel();
+            JLabel labelDNIClienteReservaConsultada = new JLabel();
+            JLabel labelTituloPeliculaReservaConsultada = new JLabel();
+            JLabel labelFechaInicioReservaConsultada = new JLabel();
+            JLabel labelFechaFinalReservaConsultada = new JLabel();
+
+            //Centramos el texto de las etiquetas
+            labelIDReservaConsultada.setHorizontalAlignment(SwingConstants.CENTER);
+            labelDNIClienteReservaConsultada.setHorizontalAlignment(SwingConstants.CENTER);
+            labelTituloPeliculaReservaConsultada.setHorizontalAlignment(SwingConstants.CENTER);
+            labelFechaInicioReservaConsultada.setHorizontalAlignment(SwingConstants.CENTER);
+            labelFechaFinalReservaConsultada.setHorizontalAlignment(SwingConstants.CENTER);
+
+            //Definimos las etiquetas opacas para poder cambiarles el color
+            labelIDReservaConsultada.setOpaque(true);
+            labelDNIClienteReservaConsultada.setOpaque(true);
+            labelTituloPeliculaReservaConsultada.setOpaque(true);
+            labelFechaInicioReservaConsultada.setOpaque(true);
+            labelFechaFinalReservaConsultada.setOpaque(true);
+
+            //Cambiamos el color de las etiquetas
+            labelIDReservaConsultada.setBackground(new Color(198, 232, 210));
+            labelDNIClienteReservaConsultada.setBackground(new Color(198, 232, 210));
+            labelTituloPeliculaReservaConsultada.setBackground(new Color(198, 232, 210));
+            labelFechaInicioReservaConsultada.setBackground(new Color(198, 232, 210));
+            labelFechaFinalReservaConsultada.setBackground(new Color(198, 232, 210));
 
             while (rs.next()) {
-                System.out.print(rs.getString(1) + "\t");
-                System.out.print(rs.getString(2) + "\t");
-                System.out.print(rs.getString(3) + "\t");
-                System.out.print(rs.getString(4) + "\t");
-                System.out.println(rs.getString(5));
+                //Añadimos información a las etiquetas según la base de datos
+                labelIDReservaConsultada.setText(rs.getString(1));
+                labelDNIClienteReservaConsultada.setText(rs.getString(2));
+                labelTituloPeliculaReservaConsultada.setText(rs.getString(3));
+                labelFechaInicioReservaConsultada.setText(rs.getString(4));
+                labelFechaFinalReservaConsultada.setText(rs.getString(5));
             }
+
+            //Añadimos las etiquetas al frame
+            frameMostrarDatosConsultaReserva.add(labelIDReservaConsultada);
+            frameMostrarDatosConsultaReserva.add(labelDNIClienteReservaConsultada);
+            frameMostrarDatosConsultaReserva.add(labelTituloPeliculaReservaConsultada);
+            frameMostrarDatosConsultaReserva.add(labelFechaInicioReservaConsultada);
+            frameMostrarDatosConsultaReserva.add(labelFechaFinalReservaConsultada);
+
+            //Hacemos el frame visible
+            frameMostrarDatosConsultaReserva.setVisible(true);
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
         } finally {
@@ -246,10 +188,8 @@ public class Reservas {
             conn = DatabaseConnectionVideoclub.getConnection();
             st = conn.createStatement();
 
-            sql = "UPDATE reservas SET idReserva = '" + idReserva + "', DNIcliente = " + DNIcliente + ", TituloPelicula = '" + tituloPelicula + "', FechaInicio = '" + fechaInicio + "', FechaFinal = '" + fechaFinal + "'";
+            sql = "UPDATE reservas SET DNIcliente = '" + DNIcliente + "', TituloPelicula = '" + tituloPelicula + "', FechaInicio = '" + fechaInicio + "', FechaFinal = '" + fechaFinal + "' WHERE idReserva = '" + idReserva + "'";
             st.executeUpdate(sql);
-
-            System.out.println("Reserva modificada correctamente.");
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
         } finally {
@@ -277,8 +217,6 @@ public class Reservas {
 
             sql = "DELETE FROM reservas WHERE idReserva = '" + idReserva + "'";
             st.executeUpdate(sql);
-
-            System.out.println("Reserva eliminada correctamente.");
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
         } finally {
@@ -305,15 +243,106 @@ public class Reservas {
             st = conn.createStatement();
             rs = st.executeQuery("SELECT * FROM reservas");
 
-            System.out.println("idReserva\t\tDNIcliente\t\tTituloPelicula\t\tFechaInicio\t\tFechaFinal\n" +
-                    "-------------------------------------------------------------------------------");
+            //Creamos el frame con sus respectivas características
+            JFrame frameMostrarTodasReservas = new JFrame("Mostrar Todas Reservas");
+            frameMostrarTodasReservas.setSize(900, 600);
+            frameMostrarTodasReservas.setResizable(false);
+            frameMostrarTodasReservas.setLocationRelativeTo(null);
+
+            //Creamos las etiquetas que encabezan la tabla
+            JLabel labelIDReserva = new JLabel("ID Reserva");
+            JLabel labelDNICliente = new JLabel("DNI Cliente");
+            JLabel labelTituloPelicula = new JLabel("Título Película");
+            JLabel labelFechaInicio = new JLabel("Fecha Inicio");
+            JLabel labelFechaFinal = new JLabel("Fecha Final");
+
+            //Centramos el texto de las etiquetas
+            labelIDReserva.setHorizontalAlignment(SwingConstants.CENTER);
+            labelDNICliente.setHorizontalAlignment(SwingConstants.CENTER);
+            labelTituloPelicula.setHorizontalAlignment(SwingConstants.CENTER);
+            labelFechaInicio.setHorizontalAlignment(SwingConstants.CENTER);
+            labelFechaFinal.setHorizontalAlignment(SwingConstants.CENTER);
+
+            //Ponemos borde a las etiquetas
+            labelIDReserva.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            labelDNICliente.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            labelTituloPelicula.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            labelFechaInicio.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            labelFechaFinal.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+            //Definimos las etiquetas opacas para poder cambiarles el color
+            labelIDReserva.setOpaque(true);
+            labelDNICliente.setOpaque(true);
+            labelTituloPelicula.setOpaque(true);
+            labelFechaInicio.setOpaque(true);
+            labelFechaFinal.setOpaque(true);
+
+            //Cambiamos el color de las etiquetas
+            labelIDReserva.setBackground(new Color(125, 210, 181));
+            labelDNICliente.setBackground(new Color(125, 210, 181));
+            labelTituloPelicula.setBackground(new Color(125, 210, 181));
+            labelFechaInicio.setBackground(new Color(125, 210, 181));
+            labelFechaFinal.setBackground(new Color(125, 210, 181));
+
+            //Añadimos las etiquetas al frame
+            frameMostrarTodasReservas.add(labelIDReserva);
+            frameMostrarTodasReservas.add(labelDNICliente);
+            frameMostrarTodasReservas.add(labelTituloPelicula);
+            frameMostrarTodasReservas.add(labelFechaInicio);
+            frameMostrarTodasReservas.add(labelFechaFinal);
+            
+            //Creamos el contador para saber cuantas filas tendrá el layout
+            int contadorFilas = 2;
+            
             while (rs.next()) {
-                System.out.print(rs.getString(1) + "\t");
-                System.out.print(rs.getString(2) + "\t");
-                System.out.print(rs.getString(3) + "\t");
-                System.out.print(rs.getString(4) + "\t");
-                System.out.println(rs.getString(5));
+                //Modificamos el layout según las filas que tenga la tabla
+                frameMostrarTodasReservas.setLayout(new GridLayout(contadorFilas++, 5));
+
+                //Creamos las etiquetas con la información
+                JLabel labelIDReservaMostrada = new JLabel();
+                JLabel labelDNIClienteMostrado = new JLabel();
+                JLabel labelTituloPeliculaMostrada = new JLabel();
+                JLabel labelFechaInicioMostrada = new JLabel();
+                JLabel labelFechaFinalMostrada = new JLabel();
+
+                //Centramos el texto de las etiquetas
+                labelIDReservaMostrada.setHorizontalAlignment(SwingConstants.CENTER);
+                labelDNIClienteMostrado.setHorizontalAlignment(SwingConstants.CENTER);
+                labelTituloPeliculaMostrada.setHorizontalAlignment(SwingConstants.CENTER);
+                labelFechaInicioMostrada.setHorizontalAlignment(SwingConstants.CENTER);
+                labelFechaFinalMostrada.setHorizontalAlignment(SwingConstants.CENTER);
+
+                //Definimos las etiquetas opacas para poder cambiarles el color
+                labelIDReservaMostrada.setOpaque(true);
+                labelDNIClienteMostrado.setOpaque(true);
+                labelTituloPeliculaMostrada.setOpaque(true);
+                labelFechaInicioMostrada.setOpaque(true);
+                labelFechaFinalMostrada.setOpaque(true);
+
+                //Cambiamos el color de las etiquetas
+                labelIDReservaMostrada.setBackground(new Color(198, 232, 210));
+                labelDNIClienteMostrado.setBackground(new Color(198, 232, 210));
+                labelTituloPeliculaMostrada.setBackground(new Color(198, 232, 210));
+                labelFechaInicioMostrada.setBackground(new Color(198, 232, 210));
+                labelFechaFinalMostrada.setBackground(new Color(198, 232, 210));
+
+                //Vamos añadiendo información a las etiquetas según la base de datos
+                labelIDReservaMostrada.setText(rs.getString(1));
+                labelDNIClienteMostrado.setText(rs.getString(2));
+                labelTituloPeliculaMostrada.setText(rs.getString(3));
+                labelFechaInicioMostrada.setText(rs.getString(4));
+                labelFechaFinalMostrada.setText(rs.getString(5));
+
+                //Añadimos las etiquetas al frame
+                frameMostrarTodasReservas.add(labelIDReservaMostrada);
+                frameMostrarTodasReservas.add(labelDNIClienteMostrado);
+                frameMostrarTodasReservas.add(labelTituloPeliculaMostrada);
+                frameMostrarTodasReservas.add(labelFechaInicioMostrada);
+                frameMostrarTodasReservas.add(labelFechaFinalMostrada);
             }
+
+            //Hacemos el frame visible
+            frameMostrarTodasReservas.setVisible(true);
         } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
         } finally {
@@ -334,33 +363,6 @@ public class Reservas {
             } catch (SQLException ex) {
                 System.out.println("Se ha producido un error al cerrar el ResultSet: " + ex.getMessage());
             }
-        }
-    }
-
-    public static void imprimirReservaPorID(String idReserva) {
-        String sql = "SELECT idReserva, Nombre as Cliente, Título, FechaInicio, FechaFinal FROM reservas JOIN clientes ON reservas.DNIcliente = DNI " +
-                "JOIN peliculas ON reservas.TituloPelicula = Título " +
-                "WHERE idReserva = ?";
-
-        try (Connection conn = DatabaseConnectionVideoclub.getConnection();
-             PreparedStatement st = conn.prepareStatement(sql)) {
-            st.setString(1, idReserva);
-            ResultSet rs = st.executeQuery();
-
-            if (rs.next()) {
-                System.out.println("╔════════════════════════════════════════╗");
-                System.out.println("║           DETALLE DE RESERVA           ║");
-                System.out.println("╠════════════════════════════════════════╣");
-                System.out.printf("║ %15s: %-20s  ║\n", "ID reserva", rs.getString("idReserva"));
-                System.out.printf("║ %15s: %-20s  ║\n", "Cliente", rs.getString("Cliente"));
-                System.out.printf("║ %15s: %-20s  ║\n", "Título", rs.getString("Título"));
-                System.out.printf("║ %15s: %-20s  ║\n", "FechaInicio", rs.getString("FechaInicio"));
-                System.out.printf("║ %15s: %-20s  ║\n", "FechaFinal", rs.getString("FechaFinal"));
-                System.out.println("╚════════════════════════════════════════╝");
-
-            } else System.out.println("No se encontró una reserva con ese ID");
-        } catch (SQLException ex) {
-            System.out.println("Error al consultar la reserva: " + ex.getMessage());
         }
     }
 }
